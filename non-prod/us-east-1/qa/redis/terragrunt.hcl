@@ -22,11 +22,21 @@ include {
   path = find_in_parent_folders()
 }
 
+dependencies {
+  paths = ["../vpc", "../security-group_1"]
+}
+
+dependency "vpc" {
+  config_path = "../vpc"
+}
+dependency "security-group_1" {
+  config_path = "../security-group_1"
+}
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
   number_cache_clusters = "2"
   node_type = "cache.t2.micro"
   name_prefix = "redis-${local.env}"
-  subnet_ids        = ["subnet-12c4ba75", "subnet-12c4ba75", "subnet-12c4ba75"]
-  vpc_id         = "vpc-d5b933af"
+  subnet_ids        = dependency.vpc.outputs.database_subnets
+  vpc_id         = dependency.vpc.outputs.vpc_id
 }
